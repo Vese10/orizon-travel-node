@@ -14,4 +14,10 @@ app.get("/products/:id", (req, res) => {
   res.status(200).json(product)
 })
 
+app.post("/products", (req, res) => {
+  const product = req.body
+  travelPack.push(product)
+  res.status(200).json(product)
+})
+
 app.listen(3000)
