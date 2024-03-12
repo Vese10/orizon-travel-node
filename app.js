@@ -1,23 +1,14 @@
 const { MongoClient } = require('mongodb')
-
-const MONGO_URI = 'mongodb://localhost:27017/OrizonTravelAgency';
-const client = new MongoClient(MONGO_URI);
-
-async function connectToMongoDB() {
-  try {
-    await client.connect();
-    console.log('Connected to MongoDB');
-  } catch (error) {
-    console.error('Error connecting to MongoDB', error);
-  }
-}
-
-connectToMongoDB ()
-
+const connectToMongoDB = require('./server')
 const express = require('express')
 
 const app = express()
 const PORT = 3000
+
+const MONGO_URI = 'mongodb://localhost:27017/OrizonTravelAgency';
+const client = new MongoClient(MONGO_URI);
+
+connectToMongoDB ()
 
 app.use(express.json())
 
@@ -26,7 +17,6 @@ app.get('/products', async (req, res) => {
   const products = await client.db().collection('products').find({}).toArray()
   res.status(200).json(products)
 })
-
 
 // See a product with a specific id:
 app.get('/products/:id', async (req, res) => {
