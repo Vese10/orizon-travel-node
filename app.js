@@ -42,7 +42,7 @@ app.get('/products/:id', async (req, res) => {
 app.post('/products', async (req, res) => {
   const newProduct = req.body
   const result = await client.db().collection('products').insertOne(newProduct)
-  res.status(200).json(result.ops[0])
+  res.status(201).json(result.ops[0])
 })
 
 // Change an existing product:
