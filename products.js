@@ -1,5 +1,6 @@
 const express = require ('express')
 const { client } = require ('./db')
+const { ObjectId } = require ('mongodb')
 
 const router = express.Router()
 
@@ -12,7 +13,7 @@ router.get('/', async (req, res) => {
 // See a product with a specific id:
 router.get('/:id', async (req, res) => {
   const id = req.params.id
-  const product = await client.db().collection('products').findOne({id})
+  const product = await client.db().collection('products').findOne({_id: new ObjectId(id)})
   if(!product) {
     return res.status(404).json({error: "Product not found"})
   }
@@ -30,7 +31,7 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   const id = req.params.id
   const updatedProduct = req.body
-  const result = await client.db().collection('products').replaceOne({id}, updatedProduct)
+  const result = await client.db().collection('products').replaceOne({_id: new ObjectId(id)}, updatedProduct)
   if (result.modifiedCount === 0) {
     return res.status(404).json({error: 'Offer not found'})
   }
@@ -40,7 +41,7 @@ router.put('/:id', async (req, res) => {
 // Delete an existing product:
 router.delete('/:id', async (req, res) => {
   const id = req.params.id
-  const result = await client.db().collection('products').deleteOne({id})
+  const result = await client.db().collection('products').deleteOne({_id: new ObjectId(id)})
   if (result.deletedCount === 0) {
     return res.status(404).json({error: 'Offer not found'})
   }
