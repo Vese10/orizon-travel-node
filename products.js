@@ -23,7 +23,7 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   const newProduct = req.body
   const result = await client.db().collection('products').insertOne(newProduct)
-  res.status(201).json(result.ops[0])
+  res.status(201).json(result)
 })
 
 // Change an existing product:
