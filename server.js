@@ -1,15 +1,17 @@
-const { MongoClient } = require('mongodb')
+const app = require('./app')
+const { connectToMongoDB } = require('./db')
 
-const MONGO_URI = 'mongodb://localhost:27017/OrizonTravelAgency';
-const client = new MongoClient(MONGO_URI);
+const PORT = 3000
 
-async function connectToMongoDB() {
+async function startServer() {
   try {
-    await client.connect();
-    console.log('Connected to MongoDB');
+    await connectToMongoDB()
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}`)
+    })
   } catch (error) {
-    console.error('Error connecting to MongoDB', error);
+    console.error('Errore starting server:', error)
   }
 }
 
-module.exports = connectToMongoDB
+startServer()
