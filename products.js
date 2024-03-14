@@ -4,7 +4,7 @@ const { ObjectId } = require ('mongodb')
 
 const router = express.Router()
 
-// See all the products in the db:
+// See all the products:
 router.get('/', async (req, res) => {
   const products = await client.db().collection('products').find({}).toArray()
   res.status(200).json(products)
@@ -33,7 +33,7 @@ router.put('/:id', async (req, res) => {
   const updatedProduct = req.body
   const result = await client.db().collection('products').replaceOne({_id: new ObjectId(id)}, updatedProduct)
   if (result.modifiedCount === 0) {
-    return res.status(404).json({error: 'Offer not found'})
+    return res.status(404).json({error: "Offer not found"})
   }
   res.status(200).json(updatedProduct)
 })
@@ -43,9 +43,9 @@ router.delete('/:id', async (req, res) => {
   const id = req.params.id
   const result = await client.db().collection('products').deleteOne({_id: new ObjectId(id)})
   if (result.deletedCount === 0) {
-    return res.status(404).json({error: 'Offer not found'})
+    return res.status(404).json({error: "Offer not found"})
   }
-  res.status(200).json({message: 'Offer deleted'})
+  res.status(200).json({message: "Offer deleted"})
 })
 
 module.exports = router

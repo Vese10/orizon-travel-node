@@ -4,7 +4,7 @@ const { ObjectId } = require('mongodb')
 
 const router = express.Router()
 
-// See all the users in the db:
+// See all the users:
 router.get('/', async (req, res) => {
   const users = await client.db().collection('users').find({}).toArray()
   res.status(200).json(users)
@@ -33,7 +33,7 @@ router.put('/:id', async (req, res) => {
   const updatedUser = req.body
   const result = await client.db().collection('users').replaceOne({_id: new ObjectId(id)}, updatedUser)
   if (result.modifiedCount === 0) {
-    return res.status(404).json({error: 'User not found'})
+    return res.status(404).json({error: "User not found"})
   }
   res.status(200).json(updatedUser)
 })
@@ -43,9 +43,9 @@ router.delete('/:id', async (req, res) => {
   const id = req.params.id
   const result = await client.db().collection('users').deleteOne({_id: new ObjectId(id)})
   if (result.deletedCount === 0) {
-    return res.status(404).json({error: 'User not found'})
+    return res.status(404).json({error: "User not found"})
   }
-  res.status(200).json({message: 'User deleted'})
+  res.status(200).json({message: "User deleted"})
 })
 
 module.exports = router
