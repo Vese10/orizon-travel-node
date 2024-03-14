@@ -4,20 +4,39 @@ const { ObjectId } = require('mongodb')
 
 const router = express.Router()
 
-// See all the orders: se a qualcuno questa cosa non piace, non ha un cuore 
+// See all the orders with filters (date & products):
 router.get('/', async (req, res) => {
-  const orders = await client.db().collection('orders').find().toArray()
-  res.status(200).json(orders)
+  try {
+    const { date, product } = req.query
+    let query = {};
+
+    if (date) {
+      query.created_at = {$gte: new Date(date)}
+    }
+
+    if (product) {
+      query.products = new ObjectId(product)
+    }
+
+    const orders = await client.db().collection('orders').find(query).toArray()
+    res.status(200).json(orders)
+  } catch (error) {
+    res.status(500).json({error: "Internal server error"})
+  }
 })
 
 // See a specific order:
 router.get('/:id', async (req, res) => {
   const id = req.params.id
-  const order = await client.db().collection('orders').findOne({_id: new ObjectId(id)})
-  if(!order) {
-    return res.status(404).json({error: "Order not found"})
+  try {
+    const order = await client.db().collection('orders').findOne({ _id: new ObjectId(id)})
+    if (!order) {
+      return res.status(404).json({error: "Order not found"})
+    }
+    res.status(200).json(order)
+  } catch (error) {
+    res.status(500).json({error: "Internal server error"})
   }
-  res.status(200).json(order)
 })
 
 // Add new order:
