@@ -51,8 +51,8 @@ router.post('/', async (req, res) => {
   }
 
   const newOrder = {
-    products: products.map(productId => new ObjectId(productId)),
-    users: users.map(userId => new ObjectId(userId)),
+    products: products.map(productId => ObjectId.createFromHexString(productId)),
+    users: users.map(userId => ObjectId.createFromHexString(userId)),
     created_at: new Date()
   }
 
@@ -77,8 +77,8 @@ router.put('/:id', async (req, res) => {
   }
 
   const updatedOrder = {
-    products: products.map(productId => new ObjectId(productId)),
-    users: users.map(userId => new ObjectId(userId)),
+    products: products.map(productId => ObjectId.createFromHexString(productId)),
+    users: users.map(userId => ObjectId.createFromHexString(userId)),
     updated_at: new Date()
   }
 
