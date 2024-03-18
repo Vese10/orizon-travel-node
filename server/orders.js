@@ -6,10 +6,12 @@ const router = express.Router()
 
 // See all the orders with filters (date & products):
 router.get('/', async (req, res) => {
-  try {
-    const { date, product } = req.query
-    let query = {};
+  const page = parseInt(req.query.page) || 1
+  const limit = parseInt(req.query.limit) || 1
+  const { date, product } = req.query
 
+  let query = {};
+  
     if (date) {
       query.created_at = {$gte: new Date(date)}
     }
@@ -18,12 +20,18 @@ router.get('/', async (req, res) => {
       query.products = new ObjectId(product)
     }
 
-    const orders = await client.db().collection('orders').find(query).toArray()
-    res.status(200).json(orders)
-  } catch (error) {
-    res.status(500).json({error: "Internal server error"})
-  }
-})
+    try {
+      const count = await client.db().collection('orders').countDocuments(query);
+      const totalPages = Math.ceil(count / limit);
+      const offset = (page - 1) * limit;
+  
+      const orders = await client.db().collection('orders').find(query).skip(offset).limit(limit).toArray();
+  
+      res.status(200).json({totalOrders: count, totalPages: totalPages, currentPage: page, orders: orders});
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
 
 // See a specific order:
 router.get('/:id', async (req, res) => {

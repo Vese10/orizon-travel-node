@@ -1,4 +1,5 @@
 const express = require('express')
+const { connectToMongoDB } = require('./db')
 const products = require('./products')
 const users = require('./users')
 const orders = require('./orders')
@@ -13,6 +14,15 @@ app.use('/products', products)
 app.use('/users', users)
 app.use('/orders', orders)
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`)
-})
+async function startServer() {
+  try {
+    await connectToMongoDB()
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}`)
+    })
+  } catch (error) {
+    console.error('Errore starting server:', error)
+  }
+}
+
+startServer()
