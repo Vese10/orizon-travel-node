@@ -1,21 +1,22 @@
 const express = require('express')
 const { getUsers, getUsersById, createUser, updateUser, deleteUser } = require('../controller/userController')
+const errorHandler = require('../view/errorHendler')
 
 const router = express.Router()
 
 // See all the users:
-router.get('/', getUsers)
+router.get('/', errorHandler(getUsers))
 
 // See a specific user:
-router.get('/:id', getUsersById)
+router.get('/:id', errorHandler(getUsersById))
 
 // Add a new user:
-router.post('/', createUser)
+router.post('/', errorHandler(createUser))
 
 // Modify an existing user:
-router.put('/:id', updateUser)
+router.put('/:id', errorHandler(updateUser))
 
 // Delete an existing user:
-router.delete('/:id', deleteUser)
+router.delete('/:id', errorHandler(deleteUser))
 
 module.exports = router

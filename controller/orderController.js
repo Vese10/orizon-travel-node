@@ -16,30 +16,23 @@ async function getOrders(req, res) {
       query.products = ObjectId.createFromHexString(product)
     }
 
-    try {
-      const count = await client.db().collection('orders').countDocuments(query)
-      const totalPages = Math.ceil(count / limit)
-      const offset = (page - 1) * limit
-  
-      const orders = await client.db().collection('orders').find(query).skip(offset).limit(limit).toArray()
-  
-      res.status(200).json({totalOrders: count, totalPages: totalPages, currentPage: page, orders: orders})
-    } catch (error) {
-      res.status(500).json({ error: "Internal server error" })
-    }
+    const count = await client.db().collection('orders').countDocuments(query)
+    const totalPages = Math.ceil(count / limit)
+    const offset = (page - 1) * limit
+
+    const orders = await client.db().collection('orders').find(query).skip(offset).limit(limit).toArray()
+
+    res.status(200).json({totalOrders: count, totalPages: totalPages, currentPage: page, orders: orders})
   }
 
   async function getOrderById(req, res) {
     const id = req.params.id
-    try {
-      const order = await client.db().collection('orders').findOne({ _id: ObjectId.createFromHexString(id)})
-      if (!order) {
-        return res.status(404).json({error: "Order not found"})
-      }
-      res.status(200).json(order)
-    } catch (error) {
-      res.status(500).json({error: "Internal server error"})
+
+    const order = await client.db().collection('orders').findOne({ _id: ObjectId.createFromHexString(id)})
+    if (!order) {
+      return res.status(404).json({error: "Order not found"})
     }
+    res.status(200).json(order)
   }
 
   async function createOrder(req, res) {
@@ -58,12 +51,8 @@ async function getOrders(req, res) {
       created_at: new Date()
     }
   
-    try {
-      const result = await client.db().collection('orders').insertOne(newOrder)
-      res.status(201).json({message: "Order created successfully", orderId: result.insertedId})
-    } catch (error) {
-      res.status(500).json({error: "Internel server error"})
-    }
+    const result = await client.db().collection('orders').insertOne(newOrder)
+    res.status(201).json({message: "Order created successfully", orderId: result.insertedId})
   }
 
   async function updateOrder(req, res) {
@@ -83,28 +72,21 @@ async function getOrders(req, res) {
       updated_at: new Date()
     }
   
-    try {
-      const result = await client.db().collection('orders').updateOne({_id: ObjectId.createFromHexString(id)}, {$set: updatedOrder})
-      if (result.modifiedCount === 0) {
-        return res.status(404).json({error: "Order not found"})
-      }
-      res.status(200).json({message: "Order updated successfully"})
-    } catch (error) {
-      res.status(500).json({error: "Internal server error"})
+    const result = await client.db().collection('orders').updateOne({_id: ObjectId.createFromHexString(id)}, {$set: updatedOrder})
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({error: "Order not found"})
     }
+    res.status(200).json({message: "Order updated successfully"})
   }
 
   async function deleteOrder(req, res) {
     const id = req.params.id
-    try {
-      const result = await client.db().collection('orders').deleteOne({_id: ObjectId.createFromHexString(id)})
-      if (result.deletedCount === 0) {
-        return res.status(404).json({error: "Order not found"})
-      }
-      res.status(200).json({message: "Order deleted successfully"})
-    } catch (error) {
-      res.status(500).json({error: "Internal server error"})
+
+    const result = await client.db().collection('orders').deleteOne({_id: ObjectId.createFromHexString(id)})
+    if (result.deletedCount === 0) {
+      return res.status(404).json({error: "Order not found"})
     }
+    res.status(200).json({message: "Order deleted successfully"})
   }
 
   module.exports = {
